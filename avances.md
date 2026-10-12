@@ -78,6 +78,10 @@ La arquitectura actual utiliza Next.js con el patrón de monolito modular. En la
 
 ```text
 pulso+/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                          # Validación continua: lint, typecheck, tests y build en PRs
+│       └── deploy.yml                      # Despliegue automatizado a Vercel (Preview en develop, Production en main)
 ├── src/
 │   ├── app/                                # Capa de ruteo de Next.js
 │   │   ├── layout.tsx                      # Layout raíz: fuentes, metadatos y contenedor global
