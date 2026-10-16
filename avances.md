@@ -175,8 +175,30 @@ pulso+/
    - **Componentes interactivos**: `LoginForm`, `RegisterForm`, `ForgotPasswordForm` y `AuthCard` con estética fiel a Pulso+.
    - **Validación robusta con Zod (`src/features/auth/model.ts`)**: Esquemas para email, longitud de clave y confirmación idéntica.
    - **Manejo resiliente de Supabase**: `isSupabaseConfigured()` previene errores cuando no se han inyectado las claves de entorno todavía, informando con mensajes amigables al usuario.
+   - **Visualizador de contraseñas**: Botones interactivos de ojo (`Eye`/`EyeOff`) en login, registro y perfil.
    - **Route Handler de Callback (`src/app/auth/callback/route.ts`)**: Intercambio de tokens PKCE para login por enlace mágico o confirmación de correo.
-   - **Suite de pruebas**: 9 nuevos tests unitarios creados en `src/features/auth/model.test.ts`, alcanzando **28 pruebas en total**, todas aprobadas.
+   - **Suite de pruebas**: 9 tests unitarios en `src/features/auth/model.test.ts`, alcanzando **28 pruebas en total**, todas aprobadas.
+
+6. **Landing Page Pública (`/`) y Separación del Dashboard (`/dashboard`):**
+   - Página principal pública de presentación de la plataforma: explicación clara de gastos fijos, gastos hormiga, ritmo de saldo disponible y seguridad.
+   - Botones principales de llamado a la acción (CTAs): "Comenzar gratis", "Iniciar sesión" y "Probar demo interactiva".
+   - Detección reactiva de sesión activa para acceso directo con un clic a "Ir a mi Dashboard".
+   - Aplicación central organizada bajo la ruta `/dashboard`.
+
+7. **Gestión de Sesión Activa y Botón de Salir:**
+   - Integración de `supabase.auth.signOut()` con estado sincronizado en tiempo real (`onAuthStateChange`).
+   - Botón visible de "Salir" / "Cerrar sesión" en: cabecera superior del Dashboard, barra lateral izquierda y tarjeta de cuenta en "Mi Perfil".
+
+8. **Inicialización de Base de Datos y Políticas RLS en Supabase (`schema.sql`):**
+   - Tablas creadas: `profiles`, `categories`, `fixed_expenses`, `expenses`.
+   - Trigger `on_auth_user_created` para creación automática de perfil al registrar usuario.
+   - Semilla con las 13 categorías del sistema preconfiguradas.
+   - Políticas de seguridad por fila (Row Level Security - RLS) activadas para privacidad estricta.
+
+9. **Dominio Personalizado de Producción en Vivo (`https://pulso.riava.cl`):**
+   - Subdominio `pulso.riava.cl` configurado exitosamente en Vercel.
+   - Registros CNAME y TXT de verificación enlazados en Cloudflare con modo DNS Only.
+   - Certificado SSL automático emitido y verificado con respuesta HTTP/2 200 en producción.
 
 ---
 
@@ -184,17 +206,12 @@ pulso+/
 
 De acuerdo con [`planificacion.md`](planificacion.md) y [`DATABASE.md`](DATABASE.md), las siguientes fases de desarrollo corresponden a:
 
-1. **Conexión de Credenciales de Supabase:**
-   - Crear el proyecto en [supabase.com](https://supabase.com).
-   - Obtener `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-   - Inyectarlas en `.env.local` y como Environment Variables en el proyecto de Vercel.
+1. **Sincronización Bidireccional de Datos (Supabase PostgreSQL <-> Local):**
+   - Leer los movimientos, gastos fijos y presupuesto desde Supabase cuando el usuario tiene la sesión iniciada.
+   - Crear, editar y eliminar registros directamente en Supabase con persistencia en PostgreSQL.
+   - Mantener fallback automático a `localStorage` para modo sin conexión o usuarios invitados.
 
-2. **Fase de Persistencia en Base de Datos (Supabase PostgreSQL):**
-   - Ejecutar las migraciones SQL para las tablas `profiles`, `categories`, `expenses` y `fixed_expenses`.
-   - Implementar políticas **Row Level Security (RLS)** para garantizar que cada usuario acceda exclusivamente a su información.
-   - Sincronizar datos entre la base de datos de Supabase y el estado local.
-
-3. **Fase de Categorías y Métodos de Pago Personalizados:**
+2. **Fase de Categorías y Métodos de Pago Personalizados:**
    - Permitir al usuario crear, editar y eliminar categorías de gasto privadas adicionales a las del sistema.
    - Soporte para métodos de pago opcionales (débito, crédito, efectivo).
 
