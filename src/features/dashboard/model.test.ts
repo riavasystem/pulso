@@ -217,9 +217,9 @@ describe("dashboard calculations", () => {
 
   it("validates user profile fields correctly", () => {
     const validProfile = {
-      firstName: "Richard",
-      lastName: "Pulso",
-      email: "richard@pulso.cl",
+      firstName: "Juan",
+      lastName: "Pérez",
+      email: "juan@pulso.cl",
       password: "secretpassword",
     };
 
@@ -271,7 +271,7 @@ describe("dashboard calculations", () => {
     const parsed = financeDataSchema.safeParse(legacyData);
     expect(parsed.success).toBe(true);
     if (parsed.success) {
-      expect(parsed.data.profile.firstName).toBe("Richard");
+      expect(parsed.data.profile.firstName).toBe("Juan");
       expect(parsed.data.profile.email).toBe("usuario@pulso.cl");
     }
   });

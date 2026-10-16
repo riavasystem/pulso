@@ -30,9 +30,9 @@ describe("auth schemas", () => {
 
   describe("registerSchema", () => {
     const validData = {
-      firstName: "Richard",
-      lastName: "Pulso",
-      email: "richard@pulso.cl",
+      firstName: "Juan",
+      lastName: "Pérez",
+      email: "juan@pulso.cl",
       password: "password123",
       confirmPassword: "password123",
     };

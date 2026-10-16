@@ -90,8 +90,8 @@ export type UserProfile = z.infer<typeof userProfileSchema>;
 export type PasswordChangeInput = z.infer<typeof passwordChangeSchema>;
 
 export const defaultUserProfile: UserProfile = {
-  firstName: "Richard",
-  lastName: "Pulso",
+  firstName: "Juan",
+  lastName: "Pérez",
   email: "usuario@pulso.cl",
   password: "",
 };

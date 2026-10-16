@@ -1,6 +1,13 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Lock, Mail } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
@@ -14,6 +21,7 @@ export function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{
     type: "error" | "success" | "info";
@@ -126,15 +134,29 @@ export function LoginForm() {
             ¿Olvidaste tu clave?
           </Link>
         </div>
-        <input
-          autoComplete="current-password"
-          className="h-11 w-full rounded-md border border-[var(--line)] bg-white px-3 text-sm outline-none transition focus:border-[var(--ink)]"
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="••••••••"
-          required
-          type="password"
-          value={password}
-        />
+        <div className="relative">
+          <input
+            autoComplete="current-password"
+            className="h-11 w-full rounded-md border border-[var(--line)] bg-white pr-10 pl-3 text-sm outline-none transition focus:border-[var(--ink)]"
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="••••••••"
+            required
+            type={showPassword ? "text" : "password"}
+            value={password}
+          />
+          <button
+            aria-label={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+            className="absolute top-0 right-0 flex h-11 w-10 items-center justify-center text-[var(--muted)] transition hover:text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+            onClick={() => setShowPassword((prev) => !prev)}
+            type="button"
+          >
+            {showPassword ? (
+              <EyeOff aria-hidden="true" className="size-4" />
+            ) : (
+              <Eye aria-hidden="true" className="size-4" />
+            )}
+          </button>
+        </div>
       </label>
 
       {status ? (

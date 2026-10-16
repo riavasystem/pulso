@@ -19,6 +19,8 @@ import {
   Coffee,
   CreditCard,
   Droplets,
+  Eye,
+  EyeOff,
   Flame,
   Flower2,
   Fuel,
@@ -2499,6 +2501,9 @@ function PasswordSecurityForm({
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [status, setStatus] = useState<{
     type: "success" | "error";
     message: string;
@@ -2555,41 +2560,89 @@ function PasswordSecurityForm({
           {hasExistingPassword ? (
             <label className="block">
               <FieldLabel icon={Lock}>Contraseña actual</FieldLabel>
-              <input
-                className="h-11 w-full rounded-md border border-[var(--line)] bg-white px-3 text-sm outline-none focus:border-[var(--ink)]"
-                onChange={(event) => setCurrentPassword(event.target.value)}
-                placeholder="Ingresa tu contraseña actual"
-                required
-                type="password"
-                value={currentPassword}
-              />
+              <div className="relative">
+                <input
+                  className="h-11 w-full rounded-md border border-[var(--line)] bg-white pr-10 pl-3 text-sm outline-none focus:border-[var(--ink)]"
+                  onChange={(event) => setCurrentPassword(event.target.value)}
+                  placeholder="Ingresa tu contraseña actual"
+                  required
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={currentPassword}
+                />
+                <button
+                  aria-label={
+                    showCurrentPassword ? "Ocultar contraseña" : "Ver contraseña"
+                  }
+                  className="absolute top-0 right-0 flex h-11 w-10 items-center justify-center text-[var(--muted)] transition hover:text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+                  onClick={() => setShowCurrentPassword((prev) => !prev)}
+                  type="button"
+                >
+                  {showCurrentPassword ? (
+                    <EyeOff aria-hidden="true" className="size-4" />
+                  ) : (
+                    <Eye aria-hidden="true" className="size-4" />
+                  )}
+                </button>
+              </div>
             </label>
           ) : null}
 
           <label className="block">
             <FieldLabel icon={KeyRound}>Nueva contraseña</FieldLabel>
-            <input
-              className="h-11 w-full rounded-md border border-[var(--line)] bg-white px-3 text-sm outline-none focus:border-[var(--ink)]"
-              minLength={6}
-              onChange={(event) => setNewPassword(event.target.value)}
-              placeholder="Mínimo 6 caracteres"
-              required
-              type="password"
-              value={newPassword}
-            />
+            <div className="relative">
+              <input
+                className="h-11 w-full rounded-md border border-[var(--line)] bg-white pr-10 pl-3 text-sm outline-none focus:border-[var(--ink)]"
+                minLength={6}
+                onChange={(event) => setNewPassword(event.target.value)}
+                placeholder="Mínimo 6 caracteres"
+                required
+                type={showNewPassword ? "text" : "password"}
+                value={newPassword}
+              />
+              <button
+                aria-label={
+                  showNewPassword ? "Ocultar contraseña" : "Ver contraseña"
+                }
+                className="absolute top-0 right-0 flex h-11 w-10 items-center justify-center text-[var(--muted)] transition hover:text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+                onClick={() => setShowNewPassword((prev) => !prev)}
+                type="button"
+              >
+                {showNewPassword ? (
+                  <EyeOff aria-hidden="true" className="size-4" />
+                ) : (
+                  <Eye aria-hidden="true" className="size-4" />
+                )}
+              </button>
+            </div>
           </label>
 
           <label className="block">
             <FieldLabel icon={KeyRound}>Confirmar nueva contraseña</FieldLabel>
-            <input
-              className="h-11 w-full rounded-md border border-[var(--line)] bg-white px-3 text-sm outline-none focus:border-[var(--ink)]"
-              minLength={6}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              placeholder="Repite la nueva contraseña"
-              required
-              type="password"
-              value={confirmPassword}
-            />
+            <div className="relative">
+              <input
+                className="h-11 w-full rounded-md border border-[var(--line)] bg-white pr-10 pl-3 text-sm outline-none focus:border-[var(--ink)]"
+                minLength={6}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                placeholder="Repite la nueva contraseña"
+                required
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+              />
+              <button
+                aria-label={
+                  showConfirmPassword ? "Ocultar contraseña" : "Ver contraseña"
+                }
+                className="absolute top-0 right-0 flex h-11 w-10 items-center justify-center text-[var(--muted)] transition hover:text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                type="button"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff aria-hidden="true" className="size-4" />
+                ) : (
+                  <Eye aria-hidden="true" className="size-4" />
+                )}
+              </button>
+            </div>
           </label>
 
           {status ? (

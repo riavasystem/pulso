@@ -152,3 +152,4 @@ CREATE POLICY "Gestion total de gastos propios"
   ON public.expenses FOR ALL
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
+
