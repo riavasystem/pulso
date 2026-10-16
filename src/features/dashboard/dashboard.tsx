@@ -30,6 +30,7 @@ import {
   Lightbulb,
   Lock,
   LogIn,
+  LogOut,
   Mail,
   PencilLine,
   PiggyBank,
@@ -59,7 +60,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
+  useEffect,
   useState,
   useSyncExternalStore,
   useRef,
@@ -67,6 +70,8 @@ import {
   type FormEvent,
   type ReactNode,
 } from "react";
+import { getBrowserClient } from "@/lib/supabase/client";
+import type { User as SupabaseAuthUser } from "@supabase/supabase-js";
 import { formatAmountInput, formatCurrency } from "@/lib/utils/currency";
 import {
   categories,
@@ -421,6 +426,37 @@ function SortDirectionToggle({
 }
 
 function Dashboard() {
+  const router = useRouter();
+  const [authUser, setAuthUser] = useState<SupabaseAuthUser | null>(null);
+
+  useEffect(() => {
+    const supabase = getBrowserClient();
+    if (!supabase) return;
+
+    supabase.auth.getUser().then(({ data }) => {
+      setAuthUser(data.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleSignOut() {
+    const supabase = getBrowserClient();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
+    setAuthUser(null);
+    router.push("/");
+  }
+
   const data = useSyncExternalStore(
     subscribeToFinanceData,
     getFinanceDataSnapshot,
@@ -793,6 +829,21 @@ function Dashboard() {
             <Check aria-hidden="true" className="size-3.5" />
             Guardado en este dispositivo
           </p>
+          {authUser ? (
+            <div className="mt-3 flex items-center justify-between border-t border-[var(--line)] px-3 pt-3">
+              <span className="truncate text-xs text-[var(--muted)]" title={authUser.email}>
+                {authUser.email}
+              </span>
+              <button
+                className="inline-flex items-center gap-1 text-xs font-medium text-[#ad3e35] transition hover:underline"
+                onClick={handleSignOut}
+                type="button"
+              >
+                <LogOut aria-hidden="true" className="size-3.5" />
+                Salir
+              </button>
+            </div>
+          ) : null}
         </div>
       </aside>
 
@@ -811,15 +862,28 @@ function Dashboard() {
               Finanzas personales <span className="px-1">/</span> {pageTitle}
             </p>
             <div className="ml-auto flex items-center gap-2 sm:gap-3">
-              <Link
-                aria-label="Acceder a tu cuenta"
-                className="hidden h-10 items-center gap-1.5 rounded-md border border-[var(--line)] bg-white px-3 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--paper)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] sm:inline-flex"
-                href="/login"
-                title="Acceder a tu cuenta"
-              >
-                <LogIn aria-hidden="true" className="size-4 text-[var(--muted)]" />
-                <span>Acceder</span>
-              </Link>
+              {authUser ? (
+                <button
+                  aria-label="Cerrar sesión"
+                  className="inline-flex h-10 items-center gap-1.5 rounded-md border border-[#f5c2b8] bg-[#fde8e4] px-3 text-sm font-medium text-[#ad3e35] transition hover:bg-[#fad8d1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+                  onClick={handleSignOut}
+                  title={`Cerrar sesión (${authUser.email})`}
+                  type="button"
+                >
+                  <LogOut aria-hidden="true" className="size-4" />
+                  <span>Salir</span>
+                </button>
+              ) : (
+                <Link
+                  aria-label="Acceder a tu cuenta"
+                  className="hidden h-10 items-center gap-1.5 rounded-md border border-[var(--line)] bg-white px-3 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--paper)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] sm:inline-flex"
+                  href="/login"
+                  title="Acceder a tu cuenta"
+                >
+                  <LogIn aria-hidden="true" className="size-4 text-[var(--muted)]" />
+                  <span>Acceder</span>
+                </Link>
+              )}
               <label className="relative flex h-10 items-center gap-2 rounded-md border border-[var(--line)] bg-white px-3 text-sm max-[360px]:gap-1 max-[360px]:px-2">
                 <CalendarDays
                   aria-hidden="true"
@@ -1758,27 +1822,42 @@ function Dashboard() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h3 className="font-semibold text-[var(--ink)]">
-                      Acceso y cuentas
+                      {authUser ? "Sesión activa en la nube" : "Acceso y cuentas"}
                     </h3>
                     <p className="mt-1 text-sm text-[var(--muted)]">
-                      Inicia sesión con tu correo o crea una nueva cuenta en Pulso+.
+                      {authUser
+                        ? `Conectado como ${authUser.email}. Tus datos están protegidos y sincronizados.`
+                        : "Inicia sesión con tu correo o crea una nueva cuenta en Pulso+."}
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <Link
-                      className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[var(--accent)] px-4 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--accent-hover)]"
-                      href="/login"
-                    >
-                      <LogIn aria-hidden="true" className="size-4" />
-                      Iniciar sesión
-                    </Link>
-                    <Link
-                      className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-[var(--line)] bg-white px-4 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--paper)]"
-                      href="/register"
-                    >
-                      <UserPlus aria-hidden="true" className="size-4" />
-                      Crear cuenta
-                    </Link>
+                    {authUser ? (
+                      <button
+                        className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-[#f5c2b8] bg-[#fde8e4] px-4 text-sm font-medium text-[#ad3e35] transition hover:bg-[#fad8d1]"
+                        onClick={handleSignOut}
+                        type="button"
+                      >
+                        <LogOut aria-hidden="true" className="size-4" />
+                        Cerrar sesión
+                      </button>
+                    ) : (
+                      <>
+                        <Link
+                          className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[var(--accent)] px-4 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--accent-hover)]"
+                          href="/login"
+                        >
+                          <LogIn aria-hidden="true" className="size-4" />
+                          Iniciar sesión
+                        </Link>
+                        <Link
+                          className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-[var(--line)] bg-white px-4 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--paper)]"
+                          href="/register"
+                        >
+                          <UserPlus aria-hidden="true" className="size-4" />
+                          Crear cuenta
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

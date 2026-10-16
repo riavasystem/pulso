@@ -92,7 +92,7 @@ export function RegisterForm() {
           type: "success",
           message: "¡Cuenta creada exitosamente! Redirigiendo...",
         });
-        router.push("/");
+        router.push("/dashboard");
         router.refresh();
       } else {
         setStatus({

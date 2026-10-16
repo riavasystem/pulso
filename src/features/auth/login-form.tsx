@@ -73,7 +73,7 @@ export function LoginForm() {
         type: "success",
         message: "Inicio de sesión correcto. Redirigiendo...",
       });
-      router.push("/");
+      router.push("/dashboard");
       router.refresh();
     } catch (err) {
       setStatus({
