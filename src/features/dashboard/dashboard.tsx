@@ -27,6 +27,7 @@ import {
   KeyRound,
   Lightbulb,
   Lock,
+  LogIn,
   Mail,
   PencilLine,
   PiggyBank,
@@ -47,6 +48,7 @@ import {
   Tv,
   Undo2,
   User,
+  UserPlus,
   Utensils,
   Wallet,
   Wifi,
@@ -807,6 +809,15 @@ function Dashboard() {
               Finanzas personales <span className="px-1">/</span> {pageTitle}
             </p>
             <div className="ml-auto flex items-center gap-2 sm:gap-3">
+              <Link
+                aria-label="Acceder a tu cuenta"
+                className="hidden h-10 items-center gap-1.5 rounded-md border border-[var(--line)] bg-white px-3 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--paper)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] sm:inline-flex"
+                href="/login"
+                title="Acceder a tu cuenta"
+              >
+                <LogIn aria-hidden="true" className="size-4 text-[var(--muted)]" />
+                <span>Acceder</span>
+              </Link>
               <label className="relative flex h-10 items-center gap-2 rounded-md border border-[var(--line)] bg-white px-3 text-sm max-[360px]:gap-1 max-[360px]:px-2">
                 <CalendarDays
                   aria-hidden="true"
@@ -1735,8 +1746,37 @@ function Dashboard() {
                     </h3>
                     <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
                       Tu información de perfil se almacena de forma segura en este dispositivo.
-                      Cuando vincules tu cuenta con Supabase Auth en la próxima etapa, estos datos se sincronizarán directamente con tu usuario en la nube con cifrado y autenticación completa.
+                      Al iniciar sesión con tu cuenta, podrás respaldar tus movimientos en la nube y sincronizarlos con cualquier equipo.
                     </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-md border border-[var(--line)] bg-white p-5 sm:p-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h3 className="font-semibold text-[var(--ink)]">
+                      Acceso y cuentas
+                    </h3>
+                    <p className="mt-1 text-sm text-[var(--muted)]">
+                      Inicia sesión con tu correo o crea una nueva cuenta en Pulso+.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Link
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[var(--accent)] px-4 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--accent-hover)]"
+                      href="/login"
+                    >
+                      <LogIn aria-hidden="true" className="size-4" />
+                      Iniciar sesión
+                    </Link>
+                    <Link
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-[var(--line)] bg-white px-4 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--paper)]"
+                      href="/register"
+                    >
+                      <UserPlus aria-hidden="true" className="size-4" />
+                      Crear cuenta
+                    </Link>
                   </div>
                 </div>
               </div>
